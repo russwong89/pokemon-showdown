@@ -79,7 +79,7 @@ export const Pokedex: {[speciesid: string]: SpeciesData} = {
 		name: "Charmander",
 		types: ["Fire"],
 		genderRatio: {M: 0.875, F: 0.125},
-		baseStats: {hp: 1000, atk: 1000, def: 1000, spa: 1000, spd: 1000, spe: 1000},
+		baseStats: {hp: 39, atk: 52, def: 43, spa: 60, spd: 50, spe: 65},
 		abilities: {0: "Blaze", H: "Solar Power"},
 		heightm: 0.6,
 		weightkg: 8.5,

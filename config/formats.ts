@@ -1246,7 +1246,7 @@ export const Formats: FormatList = [
 
 		mod: 'sharedpower',
 		searchShow: false,
-		ruleset: ['Standard', 'Dynamax Clause'],
+		ruleset: ['Standard'],
 		banlist: [
 			'Calyrex-Ice', 'Calyrex-Shadow', 'Darmanitan-Galar', 'Dialga', 'Dracovish', 'Eternatus', 'Genesect', 'Giratina',
 			'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala', 'Magearna',
@@ -3186,5 +3186,18 @@ export const Formats: FormatList = [
 		debug: true,
 		battle: {trunc: Math.trunc},
 		ruleset: ['HP Percentage Mod', 'Cancel Mod', 'Desync Clause Mod', 'Max Team Size = 24', 'Max Move Count = 24', 'Max Level = 9999', 'Default Level = 100'],
+	},
+
+	// Custom random metas
+	{
+		section: 'Custom Randomized Metas',
+		column: 4,
+	},
+	{
+		name: "[Gen 8] Random Shared Power",
+
+		mod: 'sharedpower',
+		team: 'random',
+		ruleset: ['[Gen 8] Shared Power'],
 	},
 ];

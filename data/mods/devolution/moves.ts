@@ -65,5 +65,24 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 				pokemon.removeVolatile('destinybond');
 			},
 		}
+	},
+	perishsong: {
+		inherit: true,
+		condition: {
+			duration: 4,
+			onEnd(target) {
+				this.add('-start', target, 'perish0');
+				if (target.devolve()) {
+					this.runEvent('AfterDamage', target, target, this.effect);
+				} else {
+					target.faint();
+				}
+			},
+			onResidualOrder: 24,
+			onResidual(pokemon) {
+				const duration = pokemon.volatiles['perishsong'].duration;
+				this.add('-start', pokemon, 'perish' + duration);
+			},
+		},
 	}
 };

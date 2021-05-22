@@ -34,4 +34,36 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 		inherit: true,
 		selfdestruct: 'ifHitAndNotDevolving',
 	},
+	destinybond: {
+		inherit: true,
+		condition: {
+			onStart(pokemon) {
+				this.add('-singlemove', pokemon, 'Destiny Bond');
+			},
+			onFaint(target, source, effect) {
+				if (!source || !effect || target.isAlly(source)) return;
+				if (effect.effectType === 'Move' && !effect.isFutureMove) {
+					if (source.volatiles['dynamax']) {
+						this.add('-hint', "Dynamaxed Pokémon are immune to Destiny Bond.");
+						return;
+					}
+					this.add('-activate', target, 'move: Destiny Bond');
+					if (source.devolve()) {
+						this.runEvent('AfterDamage', target, source, this.effect)
+					} else {
+						source.faint();
+					}
+				}
+			},
+			onBeforeMovePriority: -1,
+			onBeforeMove(pokemon, target, move) {
+				if (move.id === 'destinybond') return;
+				this.debug('removing Destiny Bond before attack');
+				pokemon.removeVolatile('destinybond');
+			},
+			onMoveAborted(pokemon, target, move) {
+				pokemon.removeVolatile('destinybond');
+			},
+		}
+	}
 };

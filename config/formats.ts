@@ -3251,6 +3251,29 @@ export const Formats: FormatList = [
 				}
 				target.devolveQueued = false;
 			}
+		},
+		onDamagingHit: function(damage, target, source, move) {
+			// target.hp == target.maxhp is a hacky way to check if target devolved this turn
+			if (target.getVolatile('destinybond') != null && target.hp == target.maxhp) {
+				this.add('message', `${target.name} took its attacker down with it!`);
+				if (source.devolve()) {
+					this.add('message', `${source.name} is devolving into ${source.species.prevo}!`);
+					if (!(source.formeChange(source.species.prevo, this.effect, true))) {
+						this.add('message', 'ERROR: Could not forme change');
+					}
+					let newBaseHp: number = source.species.baseStats.hp;
+					let newMaxHp: number = Math.floor(Math.floor(2 * newBaseHp + source.set.ivs['hp'] + Math.floor(source.set.evs['hp'] / 4) + 100) * source.level / 100 + 10);
+					source.maxhp = newMaxHp;
+					source.baseMaxhp = newMaxHp;
+					source.sethp(1, true);
+					if (!this.heal(source.maxhp, source, source, 'devolution')) {
+						this.add('message', 'ERROR: Could not heal devolved pokemon');
+					}
+					source.devolveQueued = false;
+				} else {
+					source.faint();
+				}
+			}
 		}
 	}
 ];

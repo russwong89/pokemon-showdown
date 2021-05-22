@@ -18,6 +18,7 @@ The column value will be ignored for repeat sections.
 */
 
 import {Utils} from '../lib';
+import { Pokemon } from '../sim';
 
 export const Formats: FormatList = [
 
@@ -3200,4 +3201,56 @@ export const Formats: FormatList = [
 		team: 'random',
 		ruleset: ['[Gen 8] Shared Power'],
 	},
+	{
+		name: "[Gen 8] Random Perishmons",
+		mod: 'gen8',
+		team: 'random',
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
+		onSwitchIn(pokemon) {
+			pokemon.addVolatile('perishsong')
+		},
+	},
+	{
+		name: "[Gen 8] Random Devolution",
+		mod: 'gen8',
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
+		pokemon: {
+			damage(d, source, effect) {
+				if (!this.hp || isNaN(d) || d <= 0) return 0;
+				if (d < 1 && d > 0) d = 1;
+				d = this.battle.trunc(d);
+				this.hp -= d;
+				if (this.hp <= 0) {
+					d += this.hp;
+					if (this.species.prevo != '') {
+						this.devolve();
+						this.hp = 1;
+					}
+					else this.faint(source, effect);
+				}
+				return d;
+			},
+		},
+		onDamagingHit: function(damage, target, source, move) {
+			if (target.devolveQueued) {
+				this.add('message', `${target.name} is devolving into ${target.species.prevo}!`);
+				if (!(target.formeChange(target.species.prevo, this.effect, true))) {
+					this.add('message', 'ERROR: Could not forme change');
+				}
+				// target.details = target.species.name + (target.level === 100 ? '' : ', L' + target.level) + (target.gender === '' ? '' : ', ' + target.gender) + (target.set.shiny ? ', shiny' : '');
+				// target.setName(target.species.name);
+				// this.add('detailschange', target, target.details, '[silent]');
+				// this.add('message', `target details: ${target.details}; target name: ${target.name}`)
+				let newBaseHp: number = target.species.baseStats.hp;
+				let newMaxHp: number = Math.floor(Math.floor(2 * newBaseHp + target.set.ivs['hp'] + Math.floor(target.set.evs['hp'] / 4) + 100) * target.level / 100 + 10);
+				target.maxhp = newMaxHp;
+				target.baseMaxhp = newMaxHp;
+				target.sethp(1, true);
+				if (!this.heal(target.maxhp, target, target, 'devolution')) {
+					this.add('message', 'ERROR: Could not heal devolved pokemon');
+				}
+				target.devolveQueued = false;
+			}
+		}
+	}
 ];

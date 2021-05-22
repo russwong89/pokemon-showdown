@@ -340,6 +340,9 @@ interface ModdedBattlePokemon {
 	// OM
 	getLinkedMoves?: (this: Pokemon, ignoreDisabled?: boolean) => string[];
 	hasLinkedMove?: (this: Pokemon, moveid: string) => boolean;
+
+	// Custom Meta
+	damage?: (this: Pokemon, d: number, source: Pokemon | null, effect: Effect | null) => number;
 }
 
 interface ModdedBattleQueue extends Partial<BattleQueue> {

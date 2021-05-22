@@ -405,6 +405,7 @@ export class Battle {
 	 * Runs an event with no source on each Pokémon on the field, in Speed order.
 	 */
 	eachEvent(eventid: string, effect?: Effect, relayVar?: boolean) {
+		// this.add('message', `eachEvent: ${eventid}`);
 		const actives = this.getAllActive();
 		if (!effect && this.effect) effect = this.effect;
 		this.speedSort(actives, (a, b) => b.speed - a.speed);
@@ -423,6 +424,7 @@ export class Battle {
 	 * Unlike `eachEvent`, this contains a lot of other handling and is intended only for the residual step.
 	 */
 	residualEvent(eventid: string, relayVar?: any) {
+		// this.add('message', `residualEvent: ${eventid}`);
 		const callbackName = `on${eventid}`;
 		let handlers = this.findBattleEventHandlers(callbackName, 'duration');
 		handlers = handlers.concat(this.findFieldEventHandlers(this.field, `onField${eventid}`, 'duration'));
@@ -470,6 +472,7 @@ export class Battle {
 		target: string | Pokemon | Side | Field | Battle | null, source?: string | Pokemon | Effect | false | null,
 		sourceEffect?: Effect | string | null, relayVar?: any, customCallback?: unknown
 	) {
+		// this.add('message', `singleEvent: ${eventid}`);
 		if (this.eventDepth >= 8) {
 			// oh fuck
 			this.add('message', 'STACK LIMIT EXCEEDED');
@@ -655,6 +658,7 @@ export class Battle {
 		// 	if (!Battle.eventCounter[eventid]) Battle.eventCounter[eventid] = 0;
 		// 	Battle.eventCounter[eventid]++;
 		// }
+		// this.add('message', `Running event: ${eventid}`)
 		if (this.eventDepth >= 8) {
 			// oh fuck
 			this.add('message', 'STACK LIMIT EXCEEDED');
@@ -1911,21 +1915,27 @@ export class Battle {
 		return damage;
 	}
 
-	heal(damage: number, target?: Pokemon, source: Pokemon | null = null, effect: 'drain' | Effect | null = null) {
+	heal(damage: number, target?: Pokemon, source: Pokemon | null = null, effect: 'drain' | 'devolution' | Effect | null = null) {
 		if (this.event) {
 			if (!target) target = this.event.target;
 			if (!source) source = this.event.source;
 			if (!effect) effect = this.effect;
 		}
-		if (effect === 'drain') effect = this.dex.conditions.getByID(effect as ID);
+		if (effect === 'drain' || effect === 'devolution') effect = this.dex.conditions.getByID(effect as ID);
 		if (damage && damage <= 1) damage = 1;
 		damage = this.trunc(damage);
 		// for things like Liquid Ooze, the Heal event still happens when nothing is healed.
 		damage = this.runEvent('TryHeal', target, source, effect, damage);
 		if (!damage) return damage;
-		if (!target?.hp) return false;
-		if (!target.isActive) return false;
-		if (target.hp >= target.maxhp) return false;
+		if (!target?.hp) {
+			return false;
+		}
+		if (!target.isActive) {
+			return false;
+		}
+		if (target.hp >= target.maxhp) {
+			return false;
+		}
 		const finalDamage = target.heal(damage, source, effect);
 		switch (effect?.id) {
 		case 'leechseed':

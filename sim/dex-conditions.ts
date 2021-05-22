@@ -673,6 +673,8 @@ export class DexConditions {
 			condition = new Condition({name: 'Recoil', effectType: 'Recoil'});
 		} else if (id === 'drain') {
 			condition = new Condition({name: 'Drain', effectType: 'Drain'});
+		} else if (id === 'devolution') {
+			condition = new Condition({name: 'Devolution', effectType: 'Devolution'});
 		} else {
 			condition = new Condition({name: id, exists: false});
 		}

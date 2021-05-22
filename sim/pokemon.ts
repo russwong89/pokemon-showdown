@@ -1443,8 +1443,8 @@ export class Pokemon {
 	}
 
 	/** Returns the amount of damage actually healed */
-	heal(d: number, source: Pokemon | null = null, effect: Effect | null = null) {
-		if (!this.hp) return false;
+	heal(d: number, source: Pokemon | null = null, effect: Effect | null = null, forceHeal = false) {
+		if (!this.hp && !forceHeal) return false;
 		d = this.battle.trunc(d);
 		if (isNaN(d)) return false;
 		if (d <= 0) return false;
@@ -1458,8 +1458,8 @@ export class Pokemon {
 	}
 
 	/** Sets HP, returns delta */
-	sethp(d: number) {
-		if (!this.hp) return 0;
+	sethp(d: number, forceSet = false) {
+		if (!this.hp && !forceSet) return 0;
 		d = this.battle.trunc(d);
 		if (isNaN(d)) return;
 		if (d < 1) d = 1;
@@ -2006,5 +2006,12 @@ export class Pokemon {
 		// get rid of some possibly-circular references
 		(this as any).battle = null!;
 		(this as any).side = null!;
+	}
+
+	// Custom functions and fields
+	devolveQueued: boolean = false;
+	devolve() {
+		if (this.species.prevo == '') return;
+		this.devolveQueued = true;
 	}
 }

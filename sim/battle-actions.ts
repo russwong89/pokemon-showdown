@@ -1108,6 +1108,13 @@ export class BattleActions {
 			if (move.selfdestruct === 'ifHit') {
 				this.battle.faint(source, source, move);
 			}
+			if (move.selfdestruct === 'ifHitAndNotDevolving') {
+				if (source.devolve()) {
+					this.battle.runEvent('AfterDamage', source, source, this.battle.effect, source.hp);
+				} else {
+					this.battle.faint(source, source, move);
+				}
+			}
 		}
 		return damage;
 	}

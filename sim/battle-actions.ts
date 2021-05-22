@@ -471,6 +471,13 @@ export class BattleActions {
 			moveResult = this.trySpreadMoveHit(targets, pokemon, move);
 		}
 		if (move.selfBoost && moveResult) this.moveHit(pokemon, pokemon, move, move.selfBoost, false, true);
+		if (move.selfdestruct === 'ifNotDevolving') {
+			if (pokemon.devolve()) {
+				this.battle.runEvent('AfterDamage', pokemon, pokemon, this.battle.effect, pokemon.hp);
+			} else {
+				this.battle.faint(pokemon, pokemon, move);
+			}
+		}
 		if (!pokemon.hp) {
 			this.battle.faint(pokemon, pokemon, move);
 		}

@@ -2011,7 +2011,8 @@ export class Pokemon {
 	// Custom functions and fields
 	devolveQueued: boolean = false;
 	devolve() {
-		if (this.species.prevo == '') return;
+		if (this.species.prevo == '') return false;
 		this.devolveQueued = true;
+		return true;
 	}
 }

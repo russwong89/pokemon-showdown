@@ -3212,8 +3212,8 @@ export const Formats: FormatList = [
 	},
 	{
 		name: "[Gen 8] Random Devolution",
-		mod: 'gen8',
-		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
+		mod: 'devolution',
+		ruleset: ['PotD', 'Team Preview', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
 		pokemon: {
 			damage(d, source, effect) {
 				if (!this.hp || isNaN(d) || d <= 0) return 0;

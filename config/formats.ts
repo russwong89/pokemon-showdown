@@ -3231,7 +3231,7 @@ export const Formats: FormatList = [
 				return d;
 			},
 		},
-		onDamagingHit: function(damage, target, source, move) {
+		onAfterDamage: function(damage, target, source, effect) {
 			if (target.devolveQueued) {
 				this.add('message', `${target.name} is devolving into ${target.species.prevo}!`);
 				if (!(target.formeChange(target.species.prevo, this.effect, true))) {

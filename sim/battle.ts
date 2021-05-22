@@ -1835,6 +1835,7 @@ export class Battle {
 					this.heal(amount, source, target, 'drain');
 				}
 			}
+			this.runEvent('AfterDamage', target, source, effect, targetDamage);
 		}
 
 		if (instafaint) {

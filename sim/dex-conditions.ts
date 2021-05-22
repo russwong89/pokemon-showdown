@@ -33,6 +33,9 @@ export interface EventMethods {
 	onDamage?: (
 		this: Battle, damage: number, target: Pokemon, source: Pokemon, effect: Effect
 	) => number | boolean | null | void;
+	onAfterDamage?: (
+		this: Battle, damage: number, target: Pokemon, source: Pokemon, effect: Effect
+	) => void;
 	onDeductPP?: (this: Battle, target: Pokemon, source: Pokemon) => number | void;
 	onDisableMove?: (this: Battle, pokemon: Pokemon) => void;
 	onDragOut?: (this: Battle, pokemon: Pokemon, source?: Pokemon, move?: ActiveMove) => void;

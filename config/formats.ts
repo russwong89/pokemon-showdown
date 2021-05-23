@@ -3286,6 +3286,7 @@ export const Formats: FormatList = [
 					this.add('message', 'ERROR: Could not heal devolved pokemon');
 				}
 				target.clearBoosts();
+				this.add('-clearboost', target);
 				target.cureStatus(true);
 				target.devolveQueued = false;
 			}

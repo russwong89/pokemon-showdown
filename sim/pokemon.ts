@@ -1258,7 +1258,7 @@ export class Pokemon {
 	 */
 	formeChange(
 		speciesId: string | Species, source: Effect = this.battle.effect,
-		isPermanent?: boolean, message?: string
+		isPermanent?: boolean, message?: string, newBaseAbility?: string
 	) {
 		const rawSpecies = this.battle.dex.species.get(speciesId);
 
@@ -1305,8 +1305,13 @@ export class Pokemon {
 			if (this.illusion) {
 				this.ability = ''; // Don't allow Illusion to wear off
 			}
-			this.setAbility(species.abilities['0'], null, true);
-			this.baseAbility = this.ability;
+			if (newBaseAbility == undefined) {
+				this.setAbility(species.abilities['0'], null, true);
+				this.baseAbility = this.ability;
+			} else {
+				this.setAbility(newBaseAbility, null, true);
+				this.baseAbility = this.ability;
+			}
 		}
 		return true;
 	}

@@ -3235,9 +3235,44 @@ export const Formats: FormatList = [
 		onAfterDamage: function(damage, target, source, effect) {
 			if (target.devolveQueued) {
 				this.add('message', `${target.name} is devolving into ${target.species.prevo}!`);
-				if (!(target.formeChange(target.species.prevo, this.effect, true))) {
+				let ability: string = target.getAbility().name;
+				let ability_type: number = 0;  // default
+				if (ability == target.species.abilities[0]) {
+					ability_type = 0;
+				} else if (ability == target.species.abilities[1]) {
+					ability_type = 1;
+				} else if (ability == target.species.abilities.H) {
+					ability_type = 2;
+				} else if (ability == target.species.abilities.S) {
+					ability_type = 3;
+				}
+				const new_species = this.dex.species.get(target.species.prevo);
+				let default_ability: string = new_species.abilities[0];
+				let new_ability: string = default_ability;
+				switch (ability_type) {
+					case 0:
+						new_ability = new_species.abilities[0] != undefined ? new_species.abilities[0] : default_ability;
+						break;
+					case 1:
+						new_ability = new_species.abilities[1] != undefined ? new_species.abilities[1] : default_ability;
+						break;
+					case 2:
+						new_ability = new_species.abilities.H != undefined ? new_species.abilities.H : default_ability;
+						break;
+					case 3:
+						new_ability = new_species.abilities.S != undefined ? new_species.abilities.S : default_ability;
+						break;
+					default:
+						new_ability = default_ability;
+						break;
+				}
+				if (!(target.formeChange(target.species.prevo, this.effect, true, undefined, new_ability))) {
 					this.add('message', 'ERROR: Could not forme change');
 				}
+				this.add('message', `new ability: ${new_ability}, ${ability_type}`);
+				// target.setAbility(new_ability, null, true);
+				// target.baseAbility = target.ability;
+				this.add('-ability', target, new_ability, '[from] devolution', '[of] ' + target);
 				// target.details = target.species.name + (target.level === 100 ? '' : ', L' + target.level) + (target.gender === '' ? '' : ', ' + target.gender) + (target.set.shiny ? ', shiny' : '');
 				// target.setName(target.species.name);
 				// this.add('detailschange', target, target.details, '[silent]');

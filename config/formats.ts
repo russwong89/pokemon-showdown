@@ -3213,6 +3213,7 @@ export const Formats: FormatList = [
 	{
 		name: "[Gen 8] Random Devolution",
 		mod: 'devolution',
+		team: 'random',
 		ruleset: ['PotD', 'Team Preview', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
 		pokemon: {
 			damage(d, source, effect) {

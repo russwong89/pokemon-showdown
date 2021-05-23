@@ -3344,5 +3344,23 @@ export const Formats: FormatList = [
 				}
 			}
 		}
+	},
+	{
+		name: '[Gen 8 Random] Team Tactics',
+		mod: 'gen8',
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Team Preview'],
+		team: 'random',
+		gameType: 'doubles',
+		onSwitchIn: function(pokemon) {
+			let base_types: string[] = this.dex.species.get(pokemon.species).types;
+			let ally_base_types: string[] = pokemon.allies().length > 0 ? this.dex.species.get(pokemon.allies()[0].species).types : [];
+			if (ally_base_types.length > 0) {
+				// Swap types
+				pokemon.setType(ally_base_types, true);
+				pokemon.allies()[0].setType(base_types, true);
+				this.add('-start', pokemon, 'typechange', ally_base_types.join('/'));
+				this.add('-start', pokemon.allies()[0], 'typechange', base_types.join('/'));
+			}
+		}
 	}
 ];

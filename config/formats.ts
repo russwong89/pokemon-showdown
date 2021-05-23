@@ -3195,14 +3195,14 @@ export const Formats: FormatList = [
 		column: 4,
 	},
 	{
-		name: "[Gen 8] Random Shared Power",
+		name: "[Gen 8 Random] Shared Power",
 
 		mod: 'sharedpower',
 		team: 'random',
 		ruleset: ['[Gen 8] Shared Power'],
 	},
 	{
-		name: "[Gen 8] Random Perishmons",
+		name: "[Gen 8 Random] Perishmons",
 		mod: 'gen8',
 		team: 'random',
 		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
@@ -3211,10 +3211,10 @@ export const Formats: FormatList = [
 		},
 	},
 	{
-		name: "[Gen 8] Random Devolution",
+		name: "[Gen 8 Random] Pokemon Devolution",
 		mod: 'devolution',
 		team: 'random',
-		ruleset: ['PotD', 'Team Preview', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
 		pokemon: {
 			damage(d, source, effect) {
 				if (!this.hp || isNaN(d) || d <= 0) return 0;
@@ -3313,6 +3313,18 @@ export const Formats: FormatList = [
 					source.faint();
 				}
 			}
+		}
+	},
+	{
+		name: '[Gen 8 Random] Too Many Types',
+		mod: 'gen8',
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
+		team: 'random',
+		onSwitchIn: function(pokemon) {
+			let type: string = this.dex.moves.get(pokemon.moveSlots[0].id).type;
+			if (pokemon.hasType(type)) return;
+			if (!pokemon.addType(type)) return;
+			this.add('-start', pokemon, 'typeadd', type);
 		}
 	}
 ];

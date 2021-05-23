@@ -3326,5 +3326,23 @@ export const Formats: FormatList = [
 			if (!pokemon.addType(type)) return;
 			this.add('-start', pokemon, 'typeadd', type);
 		}
+	},
+	{
+		name: '[Gen 8 Random] Too Many Types 2',
+		mod: 'gen8',
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
+		team: 'random',
+		onSwitchIn: function(pokemon) {
+			let types: string[] = [];
+			for (var i = 0; i < 4; ++i) {
+				types.push(this.dex.moves.get(pokemon.moveSlots[i].id).type);
+			}
+			for (let type of types) {
+				if (!pokemon.hasType(type) && pokemon.addType(type)) {
+					this.add('-start', pokemon, 'typeadd', type);
+					return;
+				}
+			}
+		}
 	}
 ];

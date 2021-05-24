@@ -3361,6 +3361,12 @@ export const Formats: FormatList = [
 		ruleset: ['[Gen 8] Shared Power'],
 	},
 	{
+		name: '[Gen 8 Random] Alphabettle',
+		mod: 'alphabettle',
+		team: 'randomAlphabettle',
+		ruleset: ['Standard NatDex', '!Obtainable Abilities'],
+	},
+	{
 		name: "[Gen 8 Random] Perishmons",
 		mod: 'gen8',
 		team: 'random',

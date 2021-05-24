@@ -27,7 +27,17 @@ export class RandomAlphabettleTeams extends RandomTeams {
 		const movePool = Object.keys(this.dex.data.Moves);
 		const naturePool = Object.keys(this.dex.data.Natures);
 
-		const randomN = this.randomNPokemon(this.maxTeamSize, this.forceMonotype);
+		// const randomN = this.randomNPokemon(this.maxTeamSize, this.forceMonotype);
+		let randomN: string [] = [];
+		let usedLetters: string[] = [];
+		for (let i: number = 0; i < this.maxTeamSize; ++i) {
+			let randomMon: string[] = this.randomNPokemon(1, this.forceMonotype);
+			while (usedLetters.includes(randomMon[0].toLowerCase().charAt(0))) {
+				randomMon = this.randomNPokemon(1, this.forceMonotype);
+			}
+			usedLetters.push(randomMon[0].toLowerCase().charAt(0));
+			randomN.push(randomMon[0]);
+		}
 
 		for (const forme of randomN) {
 			// Choose forme

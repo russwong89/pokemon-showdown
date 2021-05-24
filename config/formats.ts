@@ -3198,7 +3198,7 @@ export const Formats: FormatList = [
 		name: '[Gen 8] Alphabettle',
 		mod: 'gen8',
 		ruleset: ['Standard NatDex', 'Dynamax Clause', '!Obtainable Abilities'],
-		banlist: ['Wonder Guard', 'Moody', 'Shedinja + Sturdy', 'Slaking', 'Regigigas', 'Extreme Evoboost'],
+		banlist: ['Wonder Guard', 'Moody', 'Shedinja + Sturdy', 'Slaking', 'Regigigas', 'Extreme Evoboost', 'Clangorous Soulblaze'],
 		onValidateTeam(team) {
 			let used_letters: string[] = [];
 			for (const set of team) {

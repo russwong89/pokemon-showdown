@@ -3189,6 +3189,165 @@ export const Formats: FormatList = [
 		ruleset: ['HP Percentage Mod', 'Cancel Mod', 'Desync Clause Mod', 'Max Team Size = 24', 'Max Move Count = 24', 'Max Level = 9999', 'Default Level = 100'],
 	},
 
+	// Custom metas
+	{
+		section: 'Custom Metas',
+		column: 4,
+	},
+	{
+		name: '[Gen 8] Alphabettle',
+		mod: 'gen8',
+		ruleset: ['Standard NatDex', 'Dynamax Clause', '!Obtainable Abilities'],
+		banlist: ['Wonder Guard', 'Moody', 'Shedinja + Sturdy', 'Slaking', 'Regigigas'],
+		onValidateTeam(team) {
+			let used_letters: string[] = [];
+			for (const set of team) {
+				const letter = set.species.toLowerCase().charAt(0);
+				if (used_letters.includes(letter)) {
+					return [`You are limited to one Pokemon per letter.`, `(You have more than one ${letter}).`];
+				}
+				used_letters.push(letter);
+
+				// Check moves
+				const moves = set.moves;
+				for (const move of moves) {
+					if (move.toLowerCase().charAt(0) != letter && move != '') {
+						return [`${move} and ${set.species} do not begin with the same letter.`];
+					}
+				}
+
+				// Check ability
+				if (set.ability.toLowerCase().charAt(0) != letter) {
+					return [`${set.ability} and ${set.species} do not begin with the same letter.`];
+				}
+
+				// Check item
+				if (set.item.toLowerCase().charAt(0) != letter && set.item != '') {
+					return [`${set.species} and ${set.item} do not begin with the same letter.`];
+				}
+			}
+		},
+		checkCanLearn(move, species, set) {
+			// Perform checks in onValidateTeam
+			return null;
+		},
+	},
+	{
+		name: "[Gen 8] Perishmons",
+		mod: 'gen8',
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Team Preview'],
+		onSwitchIn(pokemon) {
+			pokemon.addVolatile('perishsong')
+		},
+	},
+	{
+		name: "[Gen 8] Pokemon Devolution",
+		mod: 'devolution',
+		team: 'random',
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Team Preview'],
+		pokemon: {
+			damage(d, source, effect) {
+				if (!this.hp || isNaN(d) || d <= 0) return 0;
+				if (d < 1 && d > 0) d = 1;
+				d = this.battle.trunc(d);
+				this.hp -= d;
+				if (this.hp <= 0) {
+					d += this.hp;
+					if (this.species.prevo != '') {
+						this.devolve();
+						this.hp = 1;
+					}
+					else this.faint(source, effect);
+				}
+				return d;
+			},
+		},
+		onAfterDamage: function(damage, target, source, effect) {
+			if (target.devolveQueued) {
+				this.add('message', `${target.name} is devolving into ${target.species.prevo}!`);
+				let ability: string = target.getAbility().name;
+				let ability_type: number = 0;  // default
+				if (ability == target.species.abilities[0]) {
+					ability_type = 0;
+				} else if (ability == target.species.abilities[1]) {
+					ability_type = 1;
+				} else if (ability == target.species.abilities.H) {
+					ability_type = 2;
+				} else if (ability == target.species.abilities.S) {
+					ability_type = 3;
+				}
+				const new_species = this.dex.species.get(target.species.prevo);
+				let default_ability: string = new_species.abilities[0];
+				let new_ability: string = default_ability;
+				switch (ability_type) {
+					case 0:
+						new_ability = new_species.abilities[0] != undefined ? new_species.abilities[0] : default_ability;
+						break;
+					case 1:
+						new_ability = new_species.abilities[1] != undefined ? new_species.abilities[1] : default_ability;
+						break;
+					case 2:
+						new_ability = new_species.abilities.H != undefined ? new_species.abilities.H : default_ability;
+						break;
+					case 3:
+						new_ability = new_species.abilities.S != undefined ? new_species.abilities.S : default_ability;
+						break;
+					default:
+						new_ability = default_ability;
+						break;
+				}
+				if (!(target.formeChange(target.species.prevo, this.effect, true, undefined, new_ability))) {
+					this.add('message', 'ERROR: Could not forme change');
+				}
+				this.add('message', `new ability: ${new_ability}, ${ability_type}`);
+				// target.setAbility(new_ability, null, true);
+				// target.baseAbility = target.ability;
+				this.add('-ability', target, new_ability, '[from] devolution', '[of] ' + target);
+				// target.details = target.species.name + (target.level === 100 ? '' : ', L' + target.level) + (target.gender === '' ? '' : ', ' + target.gender) + (target.set.shiny ? ', shiny' : '');
+				// target.setName(target.species.name);
+				// this.add('detailschange', target, target.details, '[silent]');
+				// this.add('message', `target details: ${target.details}; target name: ${target.name}`)
+				let newBaseHp: number = target.species.baseStats.hp;
+				let newMaxHp: number = Math.floor(Math.floor(2 * newBaseHp + target.set.ivs['hp'] + Math.floor(target.set.evs['hp'] / 4) + 100) * target.level / 100 + 10);
+				target.maxhp = newMaxHp;
+				target.baseMaxhp = newMaxHp;
+				target.sethp(1, true);
+				if (!this.heal(target.maxhp, target, target, 'devolution')) {
+					this.add('message', 'ERROR: Could not heal devolved pokemon');
+				}
+				target.clearBoosts();
+				this.add('-clearboost', target);
+				target.cureStatus(true);
+				target.devolveQueued = false;
+			}
+		},
+		onDamagingHit: function(damage, target, source, move) {
+			// target.hp == target.maxhp is a hacky way to check if target devolved this turn
+			if (target.getVolatile('destinybond') != null && target.hp == target.maxhp) {
+				this.add('message', `${target.name} took its attacker down with it!`);
+				if (source.devolve()) {
+					this.add('message', `${source.name} is devolving into ${source.species.prevo}!`);
+					if (!(source.formeChange(source.species.prevo, this.effect, true))) {
+						this.add('message', 'ERROR: Could not forme change');
+					}
+					let newBaseHp: number = source.species.baseStats.hp;
+					let newMaxHp: number = Math.floor(Math.floor(2 * newBaseHp + source.set.ivs['hp'] + Math.floor(source.set.evs['hp'] / 4) + 100) * source.level / 100 + 10);
+					source.maxhp = newMaxHp;
+					source.baseMaxhp = newMaxHp;
+					source.sethp(1, true);
+					if (!this.heal(source.maxhp, source, source, 'devolution')) {
+						this.add('message', 'ERROR: Could not heal devolved pokemon');
+					}
+					source.devolveQueued = false;
+				} else {
+					source.faint();
+				}
+			}
+		}
+	},
+
+
+
 	// Custom random metas
 	{
 		section: 'Custom Randomized Metas',

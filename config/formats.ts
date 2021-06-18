@@ -3345,6 +3345,32 @@ export const Formats: FormatList = [
 			}
 		}
 	},
+	{
+		name: "[Gen 8] Impersonation",
+		mod: 'gen8',
+		ruleset: ['Standard NatDex', 'Dynamax Clause', '!Nickname Clause'],
+		banlist: ['Uber', 'AG'],
+		onBeforeSwitchIn(pokemon) {
+			this.add('message', `Name is ${pokemon.name}`);
+			let illusion_species = this.dex.species.get(pokemon.name);
+			// Check for valid species
+			if (this.dex.data.Pokedex.hasOwnProperty(illusion_species.id)) {
+				this.add('message', `Illusion Name is ${illusion_species.name}, id: ${illusion_species.id}`);
+				let illusion_set = {
+					name: illusion_species.name,
+					moves: ['Tackle'] // Dummy move to avoid crash
+				}
+				pokemon.illusion = new Pokemon(illusion_set, pokemon.side);
+			}
+		},
+		onBeforeFaint(pokemon) {
+			pokemon.illusion = null;
+			const details = pokemon.species.name + (pokemon.level === 100 ? '' : ', L' + pokemon.level) +
+				(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+			this.add('replace', pokemon, details);
+			this.add('-end', pokemon, 'Illusion');
+		},
+	},
 
 
 

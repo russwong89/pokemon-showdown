@@ -3348,14 +3348,12 @@ export const Formats: FormatList = [
 	{
 		name: "[Gen 8] Impersonation",
 		mod: 'gen8',
-		ruleset: ['Standard NatDex', 'Dynamax Clause', '!Nickname Clause'],
+		ruleset: ['Standard NatDex', '!Team Preview'],
 		banlist: ['Uber', 'AG'],
 		onBeforeSwitchIn(pokemon) {
-			this.add('message', `Name is ${pokemon.name}`);
 			let illusion_species = this.dex.species.get(pokemon.name);
 			// Check for valid species
 			if (this.dex.data.Pokedex.hasOwnProperty(illusion_species.id)) {
-				this.add('message', `Illusion Name is ${illusion_species.name}, id: ${illusion_species.id}`);
 				let illusion_set = {
 					name: illusion_species.name,
 					moves: ['Tackle'] // Dummy move to avoid crash
@@ -3370,6 +3368,12 @@ export const Formats: FormatList = [
 			this.add('replace', pokemon, details);
 			this.add('-end', pokemon, 'Illusion');
 		},
+		onValidateSet(set) {
+			let illusion_species = this.dex.species.get(set.name);
+			let problems: string[] = [];
+			problems.push(...this.validateMoves(illusion_species, set.moves, this.allSources(illusion_species), set, set.name));
+			return problems;
+		}
 	},
 
 

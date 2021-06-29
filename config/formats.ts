@@ -3353,7 +3353,7 @@ export const Formats: FormatList = [
 		onBeforeSwitchIn(pokemon) {
 			let illusion_species = this.dex.species.get(pokemon.name);
 			// Check for valid species
-			if (this.dex.data.Pokedex.hasOwnProperty(illusion_species.id)) {
+			if (illusion_species.name != pokemon.species.name && this.dex.data.Pokedex.hasOwnProperty(illusion_species.id)) {
 				let illusion_set = {
 					name: illusion_species.name,
 					moves: ['Tackle'] // Dummy move to avoid crash
@@ -3362,6 +3362,7 @@ export const Formats: FormatList = [
 			}
 		},
 		onBeforeFaint(pokemon) {
+			if (pokemon.illusion == null) return;
 			pokemon.illusion = null;
 			const details = pokemon.species.name + (pokemon.level === 100 ? '' : ', L' + pokemon.level) +
 				(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
@@ -3538,7 +3539,7 @@ export const Formats: FormatList = [
 					return;
 				}
 			}
-		}
+		},
 	},
 	{
 		name: '[Gen 8 Random] Team Tactics',
@@ -3555,6 +3556,73 @@ export const Formats: FormatList = [
 				pokemon.allies()[0].setType(base_types, true);
 				this.add('-start', pokemon, 'typechange', ally_base_types.join('/'));
 				this.add('-start', pokemon.allies()[0], 'typechange', base_types.join('/'));
+			}
+		}
+	},
+	{
+		name: '[Gen 8 Random] Max Move Mayhem',
+		mod: 'gen8',
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Team Preview'],
+		team: 'random',
+		onAfterMove: function(source, target, move) {
+			if ((move.category == "Physical" || move.category == "Special") && this.lastSuccessfulMoveThisTurn != null && !source.volatiles['dynamax']) {
+				if (move.type == "Normal") {
+					for (const pokemon of source.foes()) {
+						this.boost({spe: -1}, pokemon);
+					}
+				} else if (move.type == "Fire") {
+					this.field.setWeather('sunnyday');
+				} else if (move.type == "Fighting") {
+					for (const pokemon of source.alliesAndSelf()) {
+						this.boost({atk: 1}, pokemon);
+					}
+				} else if (move.type == "Water") {
+					this.field.setWeather('raindance');
+				} else if (move.type == "Flying") {
+					for (const pokemon of source.alliesAndSelf()) {
+						this.boost({spe: 1}, pokemon);
+					}
+				} else if (move.type == "Grass") {
+					this.field.setTerrain('grassyterrain');
+				} else if (move.type == "Poison") {
+					for (const pokemon of source.alliesAndSelf()) {
+						this.boost({spa: 1}, pokemon);
+					}
+				} else if (move.type == "Electric") {
+					this.field.setTerrain('electricterrain');
+				} else if (move.type == "Ground") {
+					for (const pokemon of source.alliesAndSelf()) {
+						this.boost({spd: 1}, pokemon);
+					}
+				} else if (move.type == "Psychic") {
+					this.field.setTerrain('psychicterrain');
+				} else if (move.type == "Rock") {
+					this.field.setWeather('sandstorm');
+				} else if (move.type == "Ice") {
+					this.field.setWeather('hail');
+				} else if (move.type == "Bug") {
+					for (const pokemon of source.foes()) {
+						this.boost({spa: -1}, pokemon);
+					}
+				} else if (move.type == "Dragon") {
+					for (const pokemon of source.foes()) {
+						this.boost({atk: -1}, pokemon);
+					}
+				} else if (move.type == "Ghost") {
+					for (const pokemon of source.foes()) {
+						this.boost({def: -1}, pokemon);
+					}
+				} else if (move.type == "Dark") {
+					for (const pokemon of source.foes()) {
+						this.boost({spd: -1}, pokemon);
+					}
+				} else if (move.type == "Steel") {
+					for (const pokemon of source.alliesAndSelf()) {
+						this.boost({def: 1}, pokemon);
+					}
+				} else if (move.type == "Fairy") {
+					this.field.setTerrain('mistyterrain');
+				}
 			}
 		}
 	}

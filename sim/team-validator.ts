@@ -749,17 +749,17 @@ export class TeamValidator {
 			problems = problems.concat(format.onValidateSet.call(this, set, format, setHas, teamHas) || []);
 		}
 
-		const nameSpecies = dex.species.get(set.name);
-		if (nameSpecies.exists && nameSpecies.name.toLowerCase() === set.name.toLowerCase()) {
-			// nickname is the name of a species
-			if (nameSpecies.baseSpecies === species.baseSpecies) {
-				set.name = species.baseSpecies;
-			} else if (nameSpecies.name !== species.name && nameSpecies.name !== species.baseSpecies) {
-				// nickname species doesn't match actual species
-				// Nickname Clause
-				problems.push(`${name} must not be nicknamed a different Pokémon species than what it actually is.`);
-			}
-		}
+		// const nameSpecies = dex.species.get(set.name);
+		// if (nameSpecies.exists && nameSpecies.name.toLowerCase() === set.name.toLowerCase()) {
+		// 	// nickname is the name of a species
+		// 	if (nameSpecies.baseSpecies === species.baseSpecies) {
+		// 		set.name = species.baseSpecies;
+		// 	} else if (nameSpecies.name !== species.name && nameSpecies.name !== species.baseSpecies) {
+		// 		// nickname species doesn't match actual species
+		// 		// Nickname Clause
+		// 		problems.push(`${name} must not be nicknamed a different Pokémon species than what it actually is.`);
+		// 	}
+		// }
 
 		if (!problems.length) {
 			if (adjustLevel) set.level = adjustLevel;

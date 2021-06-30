@@ -3376,6 +3376,72 @@ export const Formats: FormatList = [
 			return problems;
 		}
 	},
+	{
+		name: '[Gen 8] Max Move Mayhem',
+		mod: 'gen8',
+		ruleset: ['Standard NatDex'],
+		onAfterMove: function(source, target, move) {
+			if ((move.category == "Physical" || move.category == "Special") && this.lastSuccessfulMoveThisTurn != null && !source.volatiles['dynamax']) {
+				if (move.type == "Normal") {
+					for (const pokemon of source.foes()) {
+						this.boost({spe: -1}, pokemon);
+					}
+				} else if (move.type == "Fire") {
+					this.field.setWeather('sunnyday');
+				} else if (move.type == "Fighting") {
+					for (const pokemon of source.alliesAndSelf()) {
+						this.boost({atk: 1}, pokemon);
+					}
+				} else if (move.type == "Water") {
+					this.field.setWeather('raindance');
+				} else if (move.type == "Flying") {
+					for (const pokemon of source.alliesAndSelf()) {
+						this.boost({spe: 1}, pokemon);
+					}
+				} else if (move.type == "Grass") {
+					this.field.setTerrain('grassyterrain');
+				} else if (move.type == "Poison") {
+					for (const pokemon of source.alliesAndSelf()) {
+						this.boost({spa: 1}, pokemon);
+					}
+				} else if (move.type == "Electric") {
+					this.field.setTerrain('electricterrain');
+				} else if (move.type == "Ground") {
+					for (const pokemon of source.alliesAndSelf()) {
+						this.boost({spd: 1}, pokemon);
+					}
+				} else if (move.type == "Psychic") {
+					this.field.setTerrain('psychicterrain');
+				} else if (move.type == "Rock") {
+					this.field.setWeather('sandstorm');
+				} else if (move.type == "Ice") {
+					this.field.setWeather('hail');
+				} else if (move.type == "Bug") {
+					for (const pokemon of source.foes()) {
+						this.boost({spa: -1}, pokemon);
+					}
+				} else if (move.type == "Dragon") {
+					for (const pokemon of source.foes()) {
+						this.boost({atk: -1}, pokemon);
+					}
+				} else if (move.type == "Ghost") {
+					for (const pokemon of source.foes()) {
+						this.boost({def: -1}, pokemon);
+					}
+				} else if (move.type == "Dark") {
+					for (const pokemon of source.foes()) {
+						this.boost({spd: -1}, pokemon);
+					}
+				} else if (move.type == "Steel") {
+					for (const pokemon of source.alliesAndSelf()) {
+						this.boost({def: 1}, pokemon);
+					}
+				} else if (move.type == "Fairy") {
+					this.field.setTerrain('mistyterrain');
+				}
+			}
+		}
+	},
 
 
 

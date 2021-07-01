@@ -3369,12 +3369,12 @@ export const Formats: FormatList = [
 			this.add('replace', pokemon, details);
 			this.add('-end', pokemon, 'Illusion');
 		},
-		onValidateSet(set) {
-			let illusion_species = this.dex.species.get(set.name);
-			let problems: string[] = [];
-			problems.push(...this.validateMoves(illusion_species, set.moves, this.allSources(illusion_species), set, set.name));
-			return problems;
-		}
+		// onValidateSet(set) {
+		// 	let illusion_species = this.dex.species.get(set.name);
+		// 	let problems: string[] = [];
+		// 	problems.push(...this.validateMoves(illusion_species, set.moves, this.allSources(illusion_species), set, set.name));
+		// 	return problems;
+		// }
 	},
 	{
 		name: '[Gen 8] Max Move Mayhem',

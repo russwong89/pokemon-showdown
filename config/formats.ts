@@ -3714,6 +3714,7 @@ export const Formats: FormatList = [
 		onModifySpecies(species) {
 			const newSpecies = this.dex.deepClone(species);
 			newSpecies.baseStats['hp'] = 1;
+			newSpecies.maxHP = 1;
 			return newSpecies;
 		},
 	}

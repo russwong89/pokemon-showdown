@@ -3709,6 +3709,12 @@ export const Formats: FormatList = [
 				}
 				return null;
 			}
-		}
+		},
+		onModifySpeciesPriority: 1,
+		onModifySpecies(species) {
+			const newSpecies = this.dex.deepClone(species);
+			newSpecies.baseStats['hp'] = 1;
+			return newSpecies;
+		},
 	}
 ];

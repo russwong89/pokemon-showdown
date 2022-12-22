@@ -698,7 +698,7 @@ export const Conditions: {[k: string]: ConditionData} = {
 			this.add('-start', pokemon, 'Dynamax');
 			if (pokemon.gigantamax) this.add('-formechange', pokemon, pokemon.species.name + '-Gmax');
 			if (pokemon.baseSpecies.name === 'Shedinja') return;
-			if (pokemon.baseSpecies.maxHP === 1) return;
+			if (pokemon.maxhp === 1) return;
 
 			// Changes based on dynamax level, 2 is max (at LVL 10)
 			const ratio = 2; // TODO: Implement Dynamax levels
@@ -729,7 +729,7 @@ export const Conditions: {[k: string]: ConditionData} = {
 			this.add('-end', pokemon, 'Dynamax');
 			if (pokemon.gigantamax) this.add('-formechange', pokemon, pokemon.species.name);
 			if (pokemon.baseSpecies.name === 'Shedinja') return;
-			if (pokemon.baseSpecies.maxHP === 1) return;
+			if (pokemon.maxhp === 1) return;
 			pokemon.hp = pokemon.getUndynamaxedHP();
 			pokemon.maxhp = pokemon.baseMaxhp;
 			this.add('-heal', pokemon, pokemon.getHealth, '[silent]');

@@ -3718,13 +3718,13 @@ export const Formats: FormatList = [
 			return newSpecies;
 		},
 	},
-	{
-		name: '[Gen 8 Random] Absolute Chaos',
-		mod: 'gen8',
-		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Team Preview'],
-		team: 'random',
-		onResidual() {
-			this.field.setWeather('raindance');
-		}
-	}
+	// {
+	// 	name: '[Gen 8 Random] Absolute Chaos',
+	// 	mod: 'gen8',
+	// 	ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Team Preview'],
+	// 	team: 'random',
+	// 	onResidual(pokemon) {
+	// 		this.add('-weather', 'RainDance');
+	// 	}
+	// }
 ];

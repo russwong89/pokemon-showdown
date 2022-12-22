@@ -3691,5 +3691,23 @@ export const Formats: FormatList = [
 				}
 			}
 		}
+	},
+	{
+		name: '[Gen 8 Random] Shedinjamons',
+		mod: 'gen8',
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Team Preview'],
+		team: 'random',
+		onTryHit(target, source, move) {
+			if (target === source || move.category === 'Status' || move.type === '???' || move.id === 'struggle') return;
+			if (move.id === 'skydrop' && !source.volatiles['skydrop']) return;
+			if (target.runEffectiveness(move) <= 0) {
+				if (move.smartTarget) {
+					move.smartTarget = false;
+				} else {
+					this.add('-immune', target, '[from] ability: ' + target.getAbility().name);
+				}
+				return null;
+			}
+		}
 	}
 ];

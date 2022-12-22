@@ -3717,5 +3717,14 @@ export const Formats: FormatList = [
 			newSpecies.maxHP = 1;
 			return newSpecies;
 		},
+	},
+	{
+		name: '[Gen 8 Random] Absolute Chaos',
+		mod: 'gen8',
+		ruleset: ['PotD', 'Obtainable', 'Species Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Team Preview'],
+		team: 'random',
+		onResidual() {
+			this.field.setWeather('raindance');
+		}
 	}
 ];

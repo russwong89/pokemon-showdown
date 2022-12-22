@@ -3700,6 +3700,7 @@ export const Formats: FormatList = [
 		onTryHit(target, source, move) {
 			if (target === source || move.category === 'Status' || move.type === '???' || move.id === 'struggle') return;
 			if (move.id === 'skydrop' && !source.volatiles['skydrop']) return;
+			if (move.ignoreAbility) return;
 			if (target.runEffectiveness(move) <= 0) {
 				if (move.smartTarget) {
 					move.smartTarget = false;
